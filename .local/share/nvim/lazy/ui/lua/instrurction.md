@@ -1,7 +1,7 @@
-**Move nvconfig.lua to ** 
+**Move nvconfig.lua to** 
 
 ```bash
-$HOME/.local/share/nvim/lazy/ui/lua/**
+$HOME/.local/share/nvim/lazy/ui/lua/
 ```
 
 - The main nvchad repo (NvChad/NvChad) is used as a plugin by this repo.

@@ -1,0 +1,115 @@
+-- local M = {}
+--
+-- local api = vim.api
+-- local fn = vim.fn
+-- local cmd = vim.cmd
+-- local keymap = vim.keymap.set
+--
+-- function M.find_main_function()
+--   local line = fn.search([[fn\s\+main\s*()]], 'nw')
+--   return line > 0 and line or 0
+-- end
+--
+-- function M.funct_search()
+--   fn.search([[^\s*#\[test\]\|^\s*fn\s\+\w\+\s*()]], 'w')
+-- end
+--
+-- function M.render_play_button()
+--   local main_line = M.find_main_function()
+--   if main_line > 0 then
+--     cmd([[sign define PlayButton text=▶ texthl=Comment]])
+--     cmd("sign place 1 line=" .. main_line .. " name=PlayButton buffer=" .. api.nvim_get_current_buf())
+--   end
+-- end
+--
+-- function M.run_rust()
+--   if fn.filereadable("Cargo.toml") == 1 then
+--     cmd("belowright split | terminal cargo run")
+--   else
+--     print("Cargo.toml not found in the current directory.")
+--   end
+-- end
+--
+-- function M.run_rust_test()
+--   local curr = fn.getline(".")
+--   local nextl = fn.getline(fn.line(".") + 1)
+--   local prevl = fn.getline(fn.line(".") - 1)
+--
+--   local is_test_annotation = curr:match("^%s*#%[test%]$")
+--   local is_fn = curr:match("^%s*fn%s+%w+%s*%(")
+--   local next_is_fn = nextl:match("^%s*fn%s+%w+%s*%(")
+--   local prev_is_test = prevl:match("^%s*#%[test%]")
+--
+--   local line_to_extract = nil
+--
+--   if is_test_annotation and next_is_fn then
+--     line_to_extract = nextl
+--   elseif is_fn and prev_is_test then
+--     line_to_extract = curr
+--   end
+--
+--   if line_to_extract then
+--     local test_name = line_to_extract:match("^%s*fn%s+(%w+)%s*%(")
+--     if test_name then
+--       cmd("belowright split | terminal cargo test " .. test_name .. " -- --exact --show-output")
+--     end
+--   else
+--     print("No unit test found at the cursor position.")
+--   end
+-- end
+--
+-- function M.clean_signcolumn()
+--   cmd("highlight SignColumn ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE")
+--   cmd("highlight! link SignColumn LineNr")
+-- end
+--
+-- function M.runs()
+--   local actions = {
+--     cpp = "CppCompile",
+--     rust = "run_rust",
+--     python = "PythonComp",
+--     go = "GoComp",
+--     c = "cComp",
+--     java = "JavaComp",
+--     asm = "AsmComp",
+--     lua = "LuaComp",
+--     kotlin = "KotlinComp",
+--     ruby = "RubyCompile",
+--   }
+--
+--   local ft = vim.bo.filetype
+--   local action = actions[ft]
+--   if action and M[action] then
+--     M[action]()
+--   else
+--     print("Action not available for filetype: " .. ft)
+--   end
+-- end
+--
+-- M.unit_test_runs = M.run_rust_test
+--
+-- function M.KotlinComp()
+--   print("Kotlin compilation not implemented yet")
+-- end
+--
+-- function M.setup()
+--   api.nvim_create_autocmd("FileType", {
+--     pattern = "rust",
+--     callback = function() M.render_play_button() end,
+--   })
+--
+--   keymap("n", "<leader>r", M.run_rust, { silent = true, desc = "Run Rust main" })
+--   keymap("n", "<leader>u", M.funct_search, { silent = true, desc = "Search fn/test" })
+--   keymap("n", "<leader>t", M.run_rust_test, { silent = true, desc = "Run test under cursor" })
+--   keymap("n", "<leader>h", "<cmd>below split | terminal<CR>", { silent = true, desc = "Open terminal" })
+--   keymap("n", "<leader>x", M.runs, { silent = true, desc = "Run file by filetype" })
+--   keymap("n", "<leader>e", M.unit_test_runs, { silent = true, desc = "Run unit test at cursor" })
+--   keymap("n", "<leader>.", M.KotlinComp, { silent = true, desc = "Compile Kotlin (stub)" })
+--
+--
+--   M.clean_signcolumn()
+-- end
+--
+-- M.setup()
+--
+-- return M
